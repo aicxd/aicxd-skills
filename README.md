@@ -2,38 +2,35 @@
 
 **中文** · [English](./README.en.md)
 
-# 🧰 aicxd Skills
+# 创小搭 AI Skills
 
-#### 创小搭 AI 出品 · 一人公司用 AI 从 0 到 1 搭出来的工具集
+**一人公司实战工具集 · 用 AI 跑业务时顺手写下来的**
 
-[![License](https://img.shields.io/badge/License-MIT-3B82F6?style=for-the-badge)](./LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-1-10B981?style=for-the-badge)](#-skills)
-[![AgentSkills](https://img.shields.io/badge/AgentSkills-Standard-8B5CF6?style=for-the-badge)](https://agentskills.io)
-
-![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-D97706?style=flat-square&logo=anthropic&logoColor=white)
-![Codex](https://img.shields.io/badge/Codex-Skill-10B981?style=flat-square&logo=openai&logoColor=white)
-![OpenCode](https://img.shields.io/badge/OpenCode-Skill-3B82F6?style=flat-square)
-![OpenClaw](https://img.shields.io/badge/OpenClaw-Skill-8B5CF6?style=flat-square)
+[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](./LICENSE)
+[![Skills](https://img.shields.io/badge/skills-1-blue?style=flat-square)](#️-skills)
+[![Platform](https://img.shields.io/badge/platform-Claude_Code_%7C_Codex_%7C_OpenCode-orange?style=flat-square)](#-安装方式)
 
 </div>
 
-一人公司，靠 Claude Code 跑日常业务。遇到问题就顺手写成 Skill，跑通了就开源出来。
+---
 
-每个 Skill 都是 Agent 能直接加载的结构化指令集，遵循 [Agent Skills](https://agentskills.io) 开放标准，Claude Code、Codex、OpenCode、OpenClaw 都能用。
+一人公司，靠 Claude Code 跑日常业务。每次被同一个问题卡住超过两次，就把解法写成 Skill。跑稳了就开源出来。
+
+每个 Skill 都是可直接加载的结构化指令集，遵循 [AgentSkills](https://agentskills.io) 开放标准。
 
 ---
 
 ## 🗂️ 目录
 
-| 名字 | 一句话 |
+| Skill | 干嘛的 |
 |---|---|
-| 🛡️ [**claude-ban-guard（封号自检）**](#️-claude-ban-guard封号自检) | 只读扫出 Claude Code 打「中国用户」隐写标记的 3 个信号，逐项给修复步骤 |
+| 🛡️ [**claude-ban-guard**](#️-claude-ban-guard) | 生成 Claude / Codex 账号安全环境自查报告，覆盖时区、代理、网络、浏览器 6 个维度，逐项 ✅/⚠️/❌ 判定 + 修复指引 |
 
 ---
 
 ## 🔧 安装方式
 
-在 Claude Code、Codex、OpenClaw 等支持 Skill 的 Agent 里，直接说：
+在支持 Skill 的 Agent（Claude Code / Codex / OpenCode 等）里直接说：
 
 **🛡️ claude-ban-guard**
 ```
@@ -44,41 +41,49 @@
 
 ## 🛠️ Skills
 
-<a id="-skills"></a>
+<a id="️-skills"></a>
 
 <table>
 <tr><td>
 
-### 🛡️ claude-ban-guard（封号自检）
+### 🛡️ claude-ban-guard
 
-> *"Anthropic 不看 IP，它看的是你机器上 3 个本地信号——时区、BASE_URL、中转站域名。挂代理没用，但改对地方三行设置就够了。"*
+> *"封号不是随机的。Anthropic 在 Claude Code 本地埋了信号采集逻辑，在你发出请求之前就已经决定了怎么标记你。这个 Skill 帮你把自己机器上的风险摸清楚。"*
 
-Claude Code 自 2.1.91(2026-04-03)起内置了一套**隐写术标记**机制：检测到中国大陆信号后，把系统提示词里 `Today's date is 2026-07-03` 那行的单引号和日期分隔符替换成肉眼无法分辨的 Unicode 变体，服务端解码后做风控处置。
+**它是什么**
 
-这个 skill 做两件事：**① 只读扫描你是否命中 3 个信号；② 按结果给逐项修复步骤**，标清哪些 Claude 可以代做、哪些你自己手动处理。
+一个只读的账号安全环境自查工具。触发后跑 `scan.ps1` 扫描本机，生成一份结构化的《Claude / Codex 账号安全自查报告》，把你当前环境里所有可能被 Anthropic 标记为"中国大陆用户"的信号全部列出来，逐项给出判定和处理方案。
 
-**它查什么**
+**背景：Claude Code 的隐写标记机制**
 
-- 🕐 **系统时区** —— Node 读 IANA 时区，是 `Asia/Shanghai` / `Asia/Urumqi` 就命中，挂代理无效
-- 🔗 **`ANTHROPIC_BASE_URL`** —— 官方用户根本不设它；设了非官方地址即为信号
-- 🌐 **中转站域名** —— 那个地址的域名被拿去和内置 147 个中转站 + 11 个 AI 实验室列表比对（列表 base64 + XOR 混淆）
-- 📡 **网络环境一致性** —— 联网查出口 IP 国家，和系统时区/语言交叉比对是否矛盾
-- 🖥️ **浏览器加固** —— 浏览器登录 claude.ai 时，WebRTC / 语言是否泄露中国特征
+自 2.1.91（2026-04-03）起，Claude Code 会在本地检测 3 个信号，命中后把系统提示词里 `Today's date is …` 这行的单引号和日期分隔符替换成肉眼无法区分的 Unicode 变体。服务端解码这个标记做风控处置。**它不看 IP**，挂代理没用。
 
-扫完按固定模板输出《Claude / Codex 账号安全自查报告》，每项给 ✅/⚠️/❌ 判定 + 处理方归属（🤖 Claude 代做 / ✋ 手动），诚实说清风险，不打包票。
+**自查报告覆盖 6 个维度**
+
+| # | 检查项 | 查什么 |
+|---|---|---|
+| 1 | 系统时区 | Node 读到的 IANA 时区是否为 `Asia/Shanghai` / `Asia/Urumqi` |
+| 2 | `ANTHROPIC_BASE_URL` | 环境变量 / settings.json / .env 三处是否设了非官方地址 |
+| 3 | 中转站域名 | 那个地址的域名是否命中内置 147 个中转站 + 11 个 AI 实验室列表 |
+| 4 | 网络环境一致性 | 出口 IP 国家与系统时区 / 语言是否矛盾 |
+| 5 | 浏览器加固 | 浏览器登录 claude.ai 时，语言 / WebRTC 是否泄露中国特征 |
+| 6 | 账号韧性 | DeepSeek 兜底 Key 是否就位，封号后关键调用能否不断 |
+
+**报告格式**
+
+每项给 ✅ / ⚠️ / ❌ 判定，并标明 🤖 Claude 可代处理 还是 ✋ 需你手动，不打包票，诚实说清楚风险。
 
 **怎么触发**
 
 ```
-会不会被封
 封号自检
-查下时区有没有暴露
-anti-ban
+会不会被封
+查下时区/BASE_URL 有没有暴露
 账号安全体检
 /claude-ban-guard
 ```
 
-**🌐 跨平台（Windows 完整实测）**：Claude Code · Codex · OpenCode · OpenClaw
+**🖥️ Windows 完整实测，macOS 可用（scan.ps1 需 pwsh）**
 
 → [SKILL.md](./claude-ban-guard/SKILL.md) · [封号识别机制详解](./claude-ban-guard/README.md)
 
@@ -89,14 +94,10 @@ anti-ban
 
 ## 👤 关于
 
-我是创小搭 AI 品牌主理人，一人公司，用 AI 从 0 到 1 搭建所有业务。这些 skill 都是自己每天在用的，开源出来如果对你有帮助，给个 ⭐ 就行。有问题或建议，欢迎在 Issues / Discussions 里说一声。
-
----
+创小搭 AI 品牌主理人，一人公司。这些工具是自己在用的，开源出来如果对你有帮助，给个 ⭐ 就行。有问题或建议欢迎开 Issue。
 
 <div align="center">
 
-[MIT License](./LICENSE) · 自由使用 / 修改 / 再分发
-
-Made by [@aicxd](https://github.com/aicxd)
+[MIT License](./LICENSE) · 自由使用 / 修改 / 再分发 · Made by [@aicxd](https://github.com/aicxd)
 
 </div>

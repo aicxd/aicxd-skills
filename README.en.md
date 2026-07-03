@@ -2,30 +2,35 @@
 
 [中文](./README.md) · **English**
 
-# 🧰 aicxd Skills
+# 创小搭 AI Skills
 
-#### By 创小搭 AI · Tools built while running a one-person company with Claude
+**Practical tools built while running a one-person company with AI**
 
-[![License](https://img.shields.io/badge/License-MIT-3B82F6?style=for-the-badge)](./LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-1-10B981?style=for-the-badge)](#-skills)
-[![AgentSkills](https://img.shields.io/badge/AgentSkills-Standard-8B5CF6?style=for-the-badge)](https://agentskills.io)
-
-![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-D97706?style=flat-square&logo=anthropic&logoColor=white)
-![Codex](https://img.shields.io/badge/Codex-Skill-10B981?style=flat-square&logo=openai&logoColor=white)
-![OpenCode](https://img.shields.io/badge/OpenCode-Skill-3B82F6?style=flat-square)
-![OpenClaw](https://img.shields.io/badge/OpenClaw-Skill-8B5CF6?style=flat-square)
+[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](./LICENSE)
+[![Skills](https://img.shields.io/badge/skills-1-blue?style=flat-square)](#️-skills)
+[![Platform](https://img.shields.io/badge/platform-Claude_Code_%7C_Codex_%7C_OpenCode-orange?style=flat-square)](#-installation)
 
 </div>
 
-Solo founder running on Claude Code. When I hit a problem that keeps coming back, I write it into a Skill. When it actually holds up, I open-source it.
+---
 
-Each skill is a structured instruction set that Agent platforms can load directly, following the [Agent Skills](https://agentskills.io) open standard. Works with Claude Code, Codex, OpenCode, and OpenClaw.
+Solo founder running daily operations on Claude Code. When the same problem blocks me twice, I write the fix into a Skill. When it holds up, I open-source it.
+
+Each Skill is a structured instruction set that Agent platforms can load directly, following the [AgentSkills](https://agentskills.io) open standard.
+
+---
+
+## 🗂️ Directory
+
+| Skill | What it does |
+|---|---|
+| 🛡️ [**claude-ban-guard**](#️-claude-ban-guard) | Generates a Claude / Codex account security environment report — checks 6 dimensions (timezone, proxy, network, browser) and gives ✅/⚠️/❌ verdicts with fix steps |
 
 ---
 
 ## 🔧 Installation
 
-In any Agent that supports Skills (Claude Code, Codex, OpenClaw, etc.), just say:
+In any Agent that supports Skills (Claude Code / Codex / OpenCode, etc.), just say:
 
 **🛡️ claude-ban-guard**
 ```
@@ -36,40 +41,48 @@ Help me install this skill: https://github.com/aicxd/aicxd-skills/tree/main/clau
 
 ## 🛠️ Skills
 
-<a id="-skills"></a>
+<a id="️-skills"></a>
 
 <table>
 <tr><td>
 
 ### 🛡️ claude-ban-guard
 
-> *"Anthropic doesn't look at your IP — it looks at 3 local signals on your machine: timezone, BASE_URL, and relay domain. A proxy won't help, but fixing the right three settings will."*
+> *"Getting banned isn't random. Anthropic embedded a signal detection layer in Claude Code that decides how to flag you before your request even goes out. This Skill maps out your own machine's risk profile."*
 
-Since Claude Code 2.1.91 (2026-04-03), a **steganographic marking** mechanism is built in: when it detects mainland China signals, it replaces the apostrophe and date separators in the system prompt line `Today's date is 2026-07-03` with visually identical Unicode variants. The server decodes these to apply risk controls.
+**What it is**
 
-This skill does two things: **① read-only scan for the 3 signals; ② per-signal fix steps**, clearly labeled whether Claude can handle it or you need to do it manually.
+A read-only account security environment scanner. When triggered, it runs `scan.ps1` against the local machine and produces a structured *Claude / Codex Account Security Report* — surfacing every signal that could cause Anthropic to flag your environment as mainland China, with verdicts and fix steps for each.
 
-**What it checks**
+**Background: Claude Code's steganographic marking**
 
-- 🕐 **System timezone** — Node reads IANA timezone; `Asia/Shanghai` / `Asia/Urumqi` triggers the flag (proxy won't help)
-- 🔗 **`ANTHROPIC_BASE_URL`** — official users never set this; any non-official address is a signal
-- 🌐 **Relay domain** — that address's domain is compared against 147 known relay stations + 11 Chinese AI lab keywords (list obfuscated with base64 + XOR)
-- 📡 **Network consistency** — queries exit IP country online, cross-checks with system timezone/language
-- 🖥️ **Browser hardening** — when logging into claude.ai in a browser, whether WebRTC / language leaks Chinese identity
+Since version 2.1.91 (2026-04-03), Claude Code detects 3 local signals and — when triggered — replaces the apostrophe and date separator in the `Today's date is …` system prompt line with visually identical Unicode variants. The server decodes this mark for risk controls. **It doesn't check your IP.** A proxy won't help.
 
-Outputs a structured *Claude / Codex Account Security Report* with ✅/⚠️/❌ per item + who handles it (🤖 Claude can do it / ✋ manual), honest about risk, no guarantees.
+**The report covers 6 dimensions**
+
+| # | Check | What's examined |
+|---|---|---|
+| 1 | System timezone | Whether Node's IANA timezone is `Asia/Shanghai` / `Asia/Urumqi` |
+| 2 | `ANTHROPIC_BASE_URL` | Whether a non-official address is set in env var / settings.json / .env |
+| 3 | Relay domain | Whether that address's domain matches the built-in list of 147 relays + 11 AI labs |
+| 4 | Network consistency | Whether exit IP country conflicts with system timezone / language |
+| 5 | Browser hardening | Whether language / WebRTC leaks Chinese identity when logging into claude.ai |
+| 6 | Account resilience | Whether a DeepSeek fallback key is in place so critical calls survive a ban |
+
+**Report format**
+
+Each item gets a ✅ / ⚠️ / ❌ verdict, labeled with 🤖 Claude can handle it or ✋ manual action needed. Honest about risk — no guarantees.
 
 **How to trigger**
 
 ```
-will I get banned
 account security check
+will I get banned
 check if my timezone is exposed
-anti-ban
 /claude-ban-guard
 ```
 
-**🌐 Cross-platform (fully tested on Windows)**: Claude Code · Codex · OpenCode · OpenClaw
+**🖥️ Fully tested on Windows, works on macOS (requires pwsh)**
 
 → [SKILL.md](./claude-ban-guard/SKILL.md) · [Ban mechanism explained](./claude-ban-guard/README.md)
 
@@ -80,14 +93,10 @@ anti-ban
 
 ## 👤 About
 
-Solo founder of 创小搭 AI, building everything from 0 to 1 with AI. These are skills I use daily. If they help you, a ⭐ is appreciated. Questions or suggestions welcome in Issues / Discussions.
-
----
+Founder of 创小搭 AI, one-person company. These are tools I actually use. If they help you, a ⭐ is appreciated. Questions or suggestions — open an Issue.
 
 <div align="center">
 
-[MIT License](./LICENSE) · Free to use / modify / redistribute
-
-Made by [@aicxd](https://github.com/aicxd)
+[MIT License](./LICENSE) · Free to use / modify / redistribute · Made by [@aicxd](https://github.com/aicxd)
 
 </div>
