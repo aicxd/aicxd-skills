@@ -4,7 +4,7 @@
 
 # 🧰 aicxd Skills
 
-#### AI Skills I use daily — open-sourced here
+#### By 创小搭 AI · Tools built while running a one-person company with Claude
 
 [![License](https://img.shields.io/badge/License-MIT-3B82F6?style=for-the-badge)](./LICENSE)
 [![Skills](https://img.shields.io/badge/Skills-1-10B981?style=for-the-badge)](#-skills)
@@ -17,9 +17,9 @@
 
 </div>
 
-Skills I've run in my own projects long enough to know they're useful. Nothing fancy — just practical tools.
+Solo founder running on Claude Code. When I hit a problem that keeps coming back, I write it into a Skill. When it actually holds up, I open-source it.
 
-Each skill is a structured instruction set that Agent platforms can load directly, following the [Agent Skills](https://agentskills.io) open standard. Compatible with Claude Code, Codex, OpenCode, and OpenClaw.
+Each skill is a structured instruction set that Agent platforms can load directly, following the [Agent Skills](https://agentskills.io) open standard. Works with Claude Code, Codex, OpenCode, and OpenClaw.
 
 ---
 

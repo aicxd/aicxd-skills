@@ -4,7 +4,7 @@
 
 # 🧰 aicxd Skills
 
-#### 我自己每天在用的一些 AI Skill，都开源在这里
+#### 创小搭 AI 出品 · 一人公司用 AI 从 0 到 1 搭出来的工具集
 
 [![License](https://img.shields.io/badge/License-MIT-3B82F6?style=for-the-badge)](./LICENSE)
 [![Skills](https://img.shields.io/badge/Skills-1-10B981?style=for-the-badge)](#-skills)
@@ -17,9 +17,9 @@
 
 </div>
 
-都是在自己项目里跑通了一段时间，确实省事，才搬出来开源的。没什么花活，就是几个挺实用的东西。
+一人公司，靠 Claude Code 跑日常业务。遇到问题就顺手写成 Skill，跑通了就开源出来。
 
-这里的每个 Skill 都是 Agent 能直接加载的结构化指令集，遵循 [Agent Skills](https://agentskills.io) 开放标准。Claude Code、Codex、OpenCode、OpenClaw 都能装。
+每个 Skill 都是 Agent 能直接加载的结构化指令集，遵循 [Agent Skills](https://agentskills.io) 开放标准，Claude Code、Codex、OpenCode、OpenClaw 都能用。
 
 ---
 
