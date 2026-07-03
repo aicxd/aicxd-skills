@@ -23,7 +23,7 @@ Each skill is a structured instruction set that Agent platforms can load directl
 
 ---
 
-## 📦 Installation
+## 🔧 Installation
 
 In any Agent that supports Skills (Claude Code, Codex, OpenClaw, etc.), just say:
 
@@ -34,7 +34,7 @@ Help me install this skill: https://github.com/aicxd/aicxd-skills/tree/main/clau
 
 ---
 
-## ✨ Skills
+## 🛠️ Skills
 
 <a id="-skills"></a>
 
@@ -78,7 +78,7 @@ anti-ban
 
 ---
 
-## 🌟 About
+## 👤 About
 
 Solo founder of 创小搭 AI, building everything from 0 to 1 with AI. These are skills I use daily. If they help you, a ⭐ is appreciated. Questions or suggestions welcome in Issues / Discussions.
 
