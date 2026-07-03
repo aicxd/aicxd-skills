@@ -27,11 +27,10 @@ Each skill is a structured instruction set that Agent platforms can load directl
 
 In any Agent that supports Skills (Claude Code, Codex, OpenClaw, etc.), just say:
 
+**🛡️ claude-ban-guard**
 ```
-Help me install this skill: https://github.com/aicxd/aicxd-skills/tree/main/<skill-name>
+Help me install this skill: https://github.com/aicxd/aicxd-skills/tree/main/claude-ban-guard
 ```
-
-Replace `<skill-name>` with the skill you want, e.g. `claude-ban-guard`. The Agent will clone it to the right directory automatically.
 
 ---
 
