@@ -235,14 +235,14 @@ Line "  Note: steganography logic present since 2.1.91 (2026-04-03); newer versi
 Line ""
 
 # ---------------------------------------------------------------------------
-# Resilience: DeepSeek fallback key (if account is banned, can key calls continue?)
+# Resilience: DeepSeek fallback key (Plan B if primary Claude access fails)
 # ---------------------------------------------------------------------------
 $dsKey = $false
 if ($env:DEEPSEEK_API_KEY) { $dsKey = $true }
 Get-ChildItem -Path $ProjectDir -Filter ".env*" -File -ErrorAction SilentlyContinue | ForEach-Object {
     if (Select-String -Path $_.FullName -Pattern '^\s*DEEPSEEK_API_KEY\s*=\s*\S' -Quiet -ErrorAction SilentlyContinue) { $script:dsKey = $true }
 }
-Line "[Resilience] DeepSeek fallback (Plan B if account is banned)"
+Line "[Resilience] DeepSeek fallback (Plan B if primary Claude access fails)"
 Line ("  DEEPSEEK_API_KEY configured : " + $dsKey)
 Line ""
 
