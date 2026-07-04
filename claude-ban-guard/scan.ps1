@@ -1,10 +1,15 @@
-# claude-ban-guard scan.ps1 -- READ-ONLY. Never modifies anything.
-# Detects the 3 signals Claude Code uses to steganographically mark Chinese users,
-# plus network consistency, browser hardening, and account resilience.
-# Usage: pwsh -NoProfile -File scan.ps1 [-ProjectDir <path>]
-# Verdict: GREEN=not flagged / YELLOW=human review needed / RED=flagged as Chinese user.
+# claude-ban-guard scan.ps1 -- READ-ONLY. Never modifies files or variables. Sends no data anywhere.
+# Offline by default (no network requests); pass -CheckIP to opt in to a single exit-IP lookup.
+# Inspects the 3 local signals Claude Code reads to identify the user environment
+# (system timezone / ANTHROPIC_BASE_URL / relay domain), plus network consistency,
+# browser hardening, and account resilience.
+# Usage: pwsh -NoProfile -File scan.ps1 [-ProjectDir <path>] [-CheckIP]
+# Verdict: GREEN / YELLOW (review) / RED (signal present).
 
-param([string]$ProjectDir = (Get-Location).Path)
+param(
+    [string]$ProjectDir = (Get-Location).Path,
+    [switch]$CheckIP
+)
 
 function Line($s) { Write-Output $s }
 
@@ -105,10 +110,12 @@ Line ""
 Line "[Signal 4] Network environment consistency (account risk, not steganography)"
 
 $exitIp = $null; $exitCountry = $null; $exitOrg = $null
-try {
-    $r = Invoke-RestMethod -Uri "https://ipinfo.io/json" -TimeoutSec 8 -ErrorAction Stop
-    $exitIp = $r.ip; $exitCountry = $r.country; $exitOrg = $r.org
-} catch {}
+if ($CheckIP) {
+    try {
+        $r = Invoke-RestMethod -Uri "https://ipinfo.io/json" -TimeoutSec 8 -ErrorAction Stop
+        $exitIp = $r.ip; $exitCountry = $r.country; $exitOrg = $r.org
+    } catch {}
+}
 
 $sysUi = try { (Get-UICulture).Name } catch { "" }
 $region = try { (Get-Culture).Name } catch { "" }
@@ -126,8 +133,10 @@ $dnsFake = @($dnsList | Where-Object { $_ -match '^198\.1[89]\.' })
 if ($exitIp) {
     Line ("  Exit IP         : " + $exitIp)
     Line ("  Exit IP country : " + $exitCountry + "  (" + $exitOrg + ")")
-} else {
+} elseif ($CheckIP) {
     Line "  Exit IP         : (query failed -- offline / blocked by local proxy / timeout)"
+} else {
+    Line "  Exit IP         : (skipped -- offline mode; pass -CheckIP to look up exit IP country)"
 }
 Line ("  System UI lang  : " + $sysUi + " / region " + $region + $(if ($langIsCN) { "  [Chinese trait]" } else { "" }))
 Line ("  System timezone : " + $(if ($tzIsCN) { "China mainland trait" } else { "non-China" }))
@@ -136,7 +145,7 @@ $dnsNote = if ($dnsFake.Count -gt 0) { "  [fake-ip mode, proxy owns DNS, usually
 Line ("  DNS servers     : " + $(if ($dnsList) { ($dnsList -join ", ") } else { "(not retrieved)" }) + $dnsNote)
 
 if (-not $exitCountry) {
-    $envFlag = "unknown (exit IP unavailable; test manually via URLs below)"
+    $envFlag = if ($CheckIP) { "unknown (exit IP lookup failed; test manually via URLs below)" } else { "not checked (offline mode; add -CheckIP to cross-check exit IP country)" }
 } elseif ($exitCountry -eq "CN") {
     $envFlag = "RED (exit IP is in mainland China, directly visible to account risk engine)"
 } elseif ($tzIsCN -or $langIsCN) {

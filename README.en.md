@@ -52,7 +52,7 @@ Help me install this skill: https://github.com/aicxd/aicxd-skills/tree/main/clau
 
 **What it is**
 
-A read-only system environment scanner. When triggered, it runs `scan.ps1` against the local machine and produces a structured *Claude / Codex System Environment Report* — surfacing every local signal Anthropic uses to identify your environment, with verdicts and adjustment steps for each.
+A read-only system environment scanner. When triggered, it runs `scan.ps1` against the local machine and produces a structured *Claude / Codex System Environment Report* — surfacing every local signal Anthropic uses to identify your environment, with verdicts and adjustment steps for each. **Read-only, offline by default, uploads nothing** (single auditable file; only `-CheckIP` makes one exit-IP lookup).
 
 **Background: Claude Code's steganographic marking**
 
